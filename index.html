@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="sr">
 <head>
 
   <meta charset="UTF-8">
 
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport"
+     content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <meta name="theme-color" content="#111827">
 
@@ -209,138 +210,140 @@
 
   <div id="status" class="status"></div>
 
-
   <!-- NOVI PUTNI NALOG -->
 
   <div class="card">
 
-    <div class="card-title">
-      Novi putni nalog
-    </div>
+```
+<div class="card-title">
+  Novi putni nalog
+</div>
 
-    <label>Datum</label>
-    <input type="date" id="date">
+<label>Datum</label>
+<input type="date" id="date">
 
-    <div class="row">
+<div class="row">
 
-      <div>
-        <label>Vreme polaska</label>
-        <input type="time" id="departureTime">
-      </div>
-
-      <div>
-        <label>Vreme dolaska</label>
-        <input type="time" id="arrivalTime">
-      </div>
-
-    </div>
-
-    <label>Registarska oznaka</label>
-
-    <input
-      type="text"
-      id="vehicle"
-      value="BG 3431-HS"
-      autocomplete="off"
-    >
-
-    <label>Mesto polaska</label>
-
-    <input
-      type="text"
-      id="startPlace"
-      autocomplete="off"
-    >
-
-    <label>Mesto dolaska</label>
-
-    <input
-      type="text"
-      id="endPlace"
-      autocomplete="off"
-    >
-
-    <div class="row">
-
-      <div>
-        <label>Km polaska</label>
-
-        <input
-          type="number"
-          id="startKm"
-          inputmode="decimal"
-          step="0.1"
-        >
-      </div>
-
-      <div>
-        <label>Km dolaska</label>
-
-        <input
-          type="number"
-          id="endKm"
-          inputmode="decimal"
-          step="0.1"
-        >
-      </div>
-
-    </div>
-
-    <div id="distancePreview"
-         style="margin-bottom:12px;font-weight:bold;">
-      Pređeno: 0 km
-    </div>
-
-    <button id="saveButton" class="save">
-      Sačuvaj putni nalog
-    </button>
-
+  <div>
+    <label>Vreme polaska</label>
+    <input type="time" id="departureTime">
   </div>
 
+  <div>
+    <label>Vreme dolaska</label>
+    <input type="time" id="arrivalTime">
+  </div>
+
+</div>
+
+<label>Registarska oznaka</label>
+
+<input
+  type="text"
+  id="vehicle"
+  value="BG 3431-HS"
+  autocomplete="off"
+>
+
+<label>Mesto polaska</label>
+
+<input
+  type="text"
+  id="startPlace"
+  autocomplete="off"
+>
+
+<label>Mesto dolaska</label>
+
+<input
+  type="text"
+  id="endPlace"
+  autocomplete="off"
+>
+
+<div class="row">
+
+  <div>
+    <label>Km polaska</label>
+
+    <input
+      type="number"
+      id="startKm"
+      inputmode="decimal"
+      step="0.1"
+    >
+  </div>
+
+  <div>
+    <label>Km dolaska</label>
+
+    <input
+      type="number"
+      id="endKm"
+      inputmode="decimal"
+      step="0.1"
+    >
+  </div>
+
+</div>
+
+<div id="distancePreview"
+     style="margin-bottom:12px;font-weight:bold;">
+  Pređeno: 0 km
+</div>
+
+<button id="saveButton" class="save">
+  Sačuvaj putni nalog
+</button>
+```
+
+  </div>
 
   <!-- DNEVNI ZBIR -->
 
   <div class="card">
 
-    <div class="card-title">
-      Dnevni pregled
-    </div>
+```
+<div class="card-title">
+  Dnevni pregled
+</div>
 
-    <div class="total-box">
+<div class="total-box">
 
-      <div class="total-label">
-        Ukupno pređeno danas
-      </div>
-
-      <div id="dailyTotal" class="total-value">
-        0 km
-      </div>
-
-    </div>
-
+  <div class="total-label">
+    Ukupno pređeno danas
   </div>
 
+  <div id="dailyTotal" class="total-value">
+    0 km
+  </div>
+
+</div>
+```
+
+  </div>
 
   <!-- POSTOJEĆI NALOZI -->
 
   <div class="card">
 
-    <div class="card-title">
-      Putni nalozi za izabrani datum
-    </div>
+```
+<div class="card-title">
+  Putni nalozi za izabrani datum
+</div>
 
-    <div id="tripsContainer">
+<div id="tripsContainer">
 
-      <div class="loading">
-        Učitavanje...
-      </div>
+  <div class="loading">
+    Učitavanje...
+  </div>
 
-    </div>
+</div>
+```
 
   </div>
 
 </div>
-
 
 <script>
 
@@ -504,6 +507,18 @@ function calculateDistance() {
     'Pređeno: ' +
     formatKm(distance) +
     ' km';
+
+}
+
+
+function escapeHtml(value) {
+
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 
 }
 
@@ -720,13 +735,6 @@ async function loadDailyTotal() {
     );
 
 
-    /*
-     * Apps Script vraća direktno broj.
-     * Na primer:
-     *
-     * 3
-     */
-
     dailyTotal.textContent =
       formatKm(result) +
       ' km';
@@ -753,102 +761,153 @@ async function loadDailyTotal() {
    ========================================================= */
 
 async function loadTrips() {
-  const date = formatDateForAPI(document.getElementById('date').value);
+
+  const date =
+    formatDateForAPI(
+      dateInput.value
+    );
+
+
+  tripsContainer.innerHTML =
+    '<div class="loading">Učitavanje...</div>';
+
 
   try {
-    const result = await jsonp({
-      action: 'getTripsForDate',
-      date: date
-    });
 
-    console.log('getTripsForDate rezultat:', result);
+    const result =
+      await jsonp({
+
+        api:
+          'getTripsForDate',
+
+        date:
+          date
+
+      });
+
+
+    console.log(
+      'TRIPS:',
+      result
+    );
+
 
     if (!Array.isArray(result)) {
-      throw new Error('API nije vratio niz putnih naloga.');
+
+      throw new Error(
+        'API nije vratio niz putnih naloga.'
+      );
+
     }
+
 
     renderTrips(result);
 
-  } catch (error) {
-    console.error('Greška pri učitavanju putnih naloga:', error);
-
-    document.getElementById('tripList').innerHTML =
-      '<div class="empty">Nije moguće učitati putne naloge.</div>';
   }
+
+  catch (error) {
+
+    console.error(
+      'Greška pri učitavanju putnih naloga:',
+      error
+    );
+
+
+    tripsContainer.innerHTML =
+      '<div class="empty">Nije moguće učitati putne naloge.</div>';
+
+  }
+
 }
+
 
 /* =========================================================
    PRIKAZ VOŽNJI
    ========================================================= */
 
 function renderTrips(trips) {
-  const container = document.getElementById('tripList');
 
-  if (!trips || trips.length === 0) {
-    container.innerHTML =
+  if (
+    !trips ||
+    trips.length === 0
+  ) {
+
+    tripsContainer.innerHTML =
       '<div class="empty">Nema putnih naloga za izabrani datum.</div>';
+
     return;
+
   }
 
-  container.innerHTML = trips.map(trip => `
-    <div class="trip-card">
-      <div class="trip-header">
-        <strong>${escapeHtml(trip.from)} → ${escapeHtml(trip.to)}</strong>
-        <button class="delete-btn" onclick="deleteTrip(${trip.row})">
-          Obriši
-        </button>
-      </div>
 
-      <div class="trip-info">
-        <div>
-          <span>Vreme</span>
-          ${escapeHtml(trip.departureTime)} – ${escapeHtml(trip.arrivalTime)}
+  tripsContainer.innerHTML =
+    trips.map(function(trip) {
+
+      return `
+
+        <div class="trip">
+
+          <div class="trip-route">
+
+            ${escapeHtml(trip.from)}
+            →
+            ${escapeHtml(trip.to)}
+
+          </div>
+
+
+          <div class="trip-info">
+
+            <div>
+              Vreme:
+              ${escapeHtml(trip.departureTime)}
+              –
+              ${escapeHtml(trip.arrivalTime)}
+            </div>
+
+            <div>
+              Vozilo:
+              ${escapeHtml(trip.vehicle)}
+            </div>
+
+            <div>
+              Kilometraža:
+              ${formatKm(trip.startKm)}
+              km →
+              ${formatKm(trip.endKm)}
+              km
+            </div>
+
+          </div>
+
+
+          <div class="trip-distance">
+
+            Pređeno:
+            ${formatKm(trip.distance)}
+            km
+
+          </div>
+
+
+          <button
+            class="delete"
+            onclick="deleteTrip(${trip.row})"
+          >
+
+            Obriši
+
+          </button>
+
         </div>
 
-        <div>
-          <span>Vozilo</span>
-          ${escapeHtml(trip.vehicle)}
-        </div>
+      `;
 
-        <div>
-          <span>Kilometraža</span>
-          ${trip.startKm} km → ${trip.endKm} km
-        </div>
+    }).join('');
 
-        <div>
-          <span>Pređeno</span>
-          <strong>${trip.distance} km</strong>
-        </div>
-      </div>
-    </div>
-  `).join('');
 }
 
 
-function escapeHtml(value) {
-
-  return String(value)
-
-    .replace(/&/g, '&amp;')
-
-    .replace(/</g, '&lt;')
-
-    .replace(/>/g, '&gt;')
-
-    .replace(/"/g, '&quot;')
-
-    .replace(/'/g, '&#039;');
-
-}
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
 /* =========================================================
    BRISANJE
    ========================================================= */
@@ -990,11 +1049,6 @@ async function saveTrip() {
   }
 
 
-  /*
-   * VAŽNO:
-   * Apps Script očekuje from i to.
-   */
-
   const data = {
 
     date:
@@ -1095,10 +1149,6 @@ async function saveTrip() {
     );
 
 
-    /*
-     * Čistimo podatke nove vožnje.
-     */
-
     startPlaceInput.value =
       '';
 
@@ -1111,10 +1161,6 @@ async function saveTrip() {
     endKmInput.value =
       '';
 
-
-    /*
-     * Ponovo učitavamo podatke.
-     */
 
     await refreshAll();
 
