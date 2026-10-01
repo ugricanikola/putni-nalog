@@ -753,172 +753,75 @@ async function loadDailyTotal() {
    ========================================================= */
 
 async function loadTrips() {
-
-  const date =
-    formatDateForAPI(
-      dateInput.value
-    );
-
-
-  tripsContainer.innerHTML =
-    '<div class="loading">Učitavanje...</div>';
-
+  const date = formatDateForAPI(document.getElementById('date').value);
 
   try {
+    const result = await jsonp({
+      action: 'getTripsForDate',
+      date: date
+    });
 
-    const trips =
-      await jsonp({
+    console.log('getTripsForDate rezultat:', result);
 
-        api:
-          'getTripsForDate',
+    if (!Array.isArray(result)) {
+      throw new Error('API nije vratio niz putnih naloga.');
+    }
 
-        date:
-          date
+    renderTrips(result);
 
-      });
+  } catch (error) {
+    console.error('Greška pri učitavanju putnih naloga:', error);
 
-
-    console.log(
-      'TRIPS:',
-      trips
-    );
-
-
-    renderTrips(trips);
-
+    document.getElementById('tripList').innerHTML =
+      '<div class="empty">Nije moguće učitati putne naloge.</div>';
   }
-
-  catch (error) {
-
-    console.error(
-      'Trips error:',
-      error
-    );
-
-
-    tripsContainer.innerHTML =
-      '<div class="empty">' +
-      'Nije moguće učitati putne naloge.' +
-      '</div>';
-
-  }
-
 }
-
 
 /* =========================================================
    PRIKAZ VOŽNJI
    ========================================================= */
 
 function renderTrips(trips) {
+  const container = document.getElementById('tripList');
 
-  if (
-    !Array.isArray(trips) ||
-    trips.length === 0
-  ) {
-
-    tripsContainer.innerHTML =
-      '<div class="empty">' +
-      'Nema putnih naloga za izabrani datum.' +
-      '</div>';
-
+  if (!trips || trips.length === 0) {
+    container.innerHTML =
+      '<div class="empty">Nema putnih naloga za izabrani datum.</div>';
     return;
-
   }
 
+  container.innerHTML = trips.map(trip => `
+    <div class="trip-card">
+      <div class="trip-header">
+        <strong>${escapeHtml(trip.from)} → ${escapeHtml(trip.to)}</strong>
+        <button class="delete-btn" onclick="deleteTrip(${trip.row})">
+          Obriši
+        </button>
+      </div>
 
-  tripsContainer.innerHTML =
-    '';
+      <div class="trip-info">
+        <div>
+          <span>Vreme</span>
+          ${escapeHtml(trip.departureTime)} – ${escapeHtml(trip.arrivalTime)}
+        </div>
 
+        <div>
+          <span>Vozilo</span>
+          ${escapeHtml(trip.vehicle)}
+        </div>
 
-  trips.forEach(function(trip) {
+        <div>
+          <span>Kilometraža</span>
+          ${trip.startKm} km → ${trip.endKm} km
+        </div>
 
-    const element =
-      document.createElement('div');
-
-    element.className =
-      'trip';
-
-
-    const route =
-      document.createElement('div');
-
-    route.className =
-      'trip-route';
-
-    route.textContent =
-      trip.from +
-      ' → ' +
-      trip.to;
-
-
-    const info =
-      document.createElement('div');
-
-    info.className =
-      'trip-info';
-
-
-    info.innerHTML =
-      'Polazak: ' +
-      escapeHtml(trip.departureTime) +
-      ' &nbsp; | &nbsp; Dolazak: ' +
-      escapeHtml(trip.arrivalTime) +
-      '<br>' +
-      'Km: ' +
-      escapeHtml(formatKm(trip.startKm)) +
-      ' → ' +
-      escapeHtml(formatKm(trip.endKm)) +
-      '<br>' +
-      'Vozilo: ' +
-      escapeHtml(trip.vehicle);
-
-
-    const distance =
-      document.createElement('div');
-
-    distance.className =
-      'trip-distance';
-
-    distance.textContent =
-      'Pređeno: ' +
-      formatKm(trip.distance) +
-      ' km';
-
-
-    const deleteButton =
-      document.createElement('button');
-
-    deleteButton.className =
-      'delete';
-
-    deleteButton.textContent =
-      'Obriši nalog';
-
-
-    deleteButton.onclick =
-      function() {
-
-        deleteTrip(trip.row);
-
-      };
-
-
-    element.appendChild(route);
-
-    element.appendChild(info);
-
-    element.appendChild(distance);
-
-    element.appendChild(deleteButton);
-
-
-    tripsContainer.appendChild(
-      element
-    );
-
-  });
-
+        <div>
+          <span>Pređeno</span>
+          <strong>${trip.distance} km</strong>
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
 
@@ -938,7 +841,14 @@ function escapeHtml(value) {
 
 }
 
-
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 /* =========================================================
    BRISANJE
    ========================================================= */
