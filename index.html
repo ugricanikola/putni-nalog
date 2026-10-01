@@ -1,63 +1,54 @@
 <!DOCTYPE html>
 <html lang="sr">
 <head>
-
   <meta charset="UTF-8">
 
   <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1">
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <meta name="theme-color" content="#111827">
-
-  <meta name="mobile-web-app-capable" content="yes">
-
-  <meta name="apple-mobile-web-app-capable" content="yes">
-
-  <meta name="apple-mobile-web-app-status-bar-style"
-        content="black-translucent">
-
-  <meta name="apple-mobile-web-app-title"
-        content="Putni nalog">
 
   <link rel="manifest" href="manifest.json">
 
   <title>Putni nalog</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      padding: 16px;
+      padding: 0;
       background: #f3f4f6;
-      font-family: Arial, sans-serif;
       color: #111827;
+      font-family: Arial, sans-serif;
     }
 
     .app {
       max-width: 600px;
-      margin: auto;
+      margin: 0 auto;
+      padding: 16px;
     }
 
     h1 {
       margin: 5px 0 18px;
-      font-size: 26px;
-    }
-
-    h2 {
-      font-size: 20px;
-      margin-top: 0;
+      text-align: center;
+      font-size: 27px;
     }
 
     .card {
       background: white;
-      border-radius: 16px;
-      padding: 18px;
+      border-radius: 14px;
+      padding: 16px;
       margin-bottom: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 14px;
     }
 
     label {
@@ -71,10 +62,15 @@
       width: 100%;
       padding: 13px;
       border: 1px solid #d1d5db;
-      border-radius: 10px;
+      border-radius: 9px;
       font-size: 16px;
-      margin-bottom: 14px;
+      margin-bottom: 13px;
       background: white;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #111827;
     }
 
     .row {
@@ -85,10 +81,10 @@
 
     button {
       width: 100%;
-      padding: 14px;
       border: 0;
       border-radius: 10px;
-      font-size: 17px;
+      padding: 14px;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -96,57 +92,116 @@
     .save {
       background: #111827;
       color: white;
+      margin-top: 5px;
     }
 
-    .delete {
-      background: #fee2e2;
-      color: #991b1b;
-      margin-top: 8px;
-      font-size: 14px;
-      padding: 10px;
+    .save:disabled {
+      opacity: 0.6;
     }
 
-    .total {
-      font-size: 22px;
+    .install {
+      background: #2563eb;
+      color: white;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .total-box {
+      background: #111827;
+      color: white;
+      border-radius: 12px;
+      padding: 17px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .total-label {
+      font-size: 15px;
+    }
+
+    .total-value {
+      font-size: 25px;
       font-weight: bold;
-      text-align: center;
     }
 
     .trip {
-      border-top: 1px solid #e5e7eb;
-      padding: 12px 0;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 13px;
+      margin-bottom: 10px;
+      background: #fafafa;
     }
 
-    .trip:first-child {
-      border-top: none;
-    }
-
-    .trip-title {
+    .trip-route {
+      font-size: 17px;
       font-weight: bold;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     .trip-info {
       font-size: 14px;
       color: #4b5563;
-      line-height: 1.5;
+      line-height: 1.6;
     }
 
-    .message {
-      text-align: center;
-      margin-top: 10px;
+    .trip-distance {
+      font-size: 16px;
       font-weight: bold;
+      margin-top: 5px;
     }
 
-    .install {
+    .delete {
+      margin-top: 10px;
+      padding: 9px;
+      font-size: 14px;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .empty {
+      text-align: center;
+      color: #6b7280;
+      padding: 15px 5px;
+    }
+
+    .status {
       display: none;
-      background: #2563eb;
-      color: white;
+      padding: 12px;
+      border-radius: 9px;
       margin-bottom: 15px;
+      font-size: 14px;
+      text-align: center;
     }
 
-  </style>
+    .status.success {
+      display: block;
+      background: #dcfce7;
+      color: #166534;
+    }
 
+    .status.error {
+      display: block;
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .loading {
+      color: #6b7280;
+      text-align: center;
+      padding: 10px;
+    }
+
+    @media (max-width: 420px) {
+      .app {
+        padding: 11px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -155,159 +210,127 @@
 
   <h1>🚗 Putni nalog</h1>
 
-  <button
-    id="installButton"
-    class="install">
+  <button id="installButton" class="install">
     📲 Instaliraj aplikaciju
   </button>
 
+  <div id="status" class="status"></div>
 
+  <!-- UNOS -->
   <div class="card">
 
-    <form id="tripForm">
+    <div class="card-title">
+      Novi putni nalog
+    </div>
 
-      <label>Datum</label>
+    <label for="date">Datum</label>
+    <input type="date" id="date">
 
-      <input
-        id="date"
-        maxlength="10"
-        inputmode="numeric"
-        placeholder="dd-mm-yyyy"
-        required
-      >
+    <div class="row">
 
-
-      <div class="row">
-
-        <div>
-
-          <label>Vreme polaska</label>
-
-          <input
-            id="departureTime"
-            maxlength="5"
-            inputmode="numeric"
-            placeholder="HH:MM"
-            required
-          >
-
-        </div>
-
-
-        <div>
-
-          <label>Vreme dolaska</label>
-
-          <input
-            id="arrivalTime"
-            maxlength="5"
-            inputmode="numeric"
-            placeholder="HH:MM"
-            required
-          >
-
-        </div>
-
+      <div>
+        <label for="departureTime">Vreme polaska</label>
+        <input type="time" id="departureTime">
       </div>
 
-
-      <label>Registarska oznaka</label>
-
-      <input
-        id="vehicle"
-        value="BG 3431-HS"
-        required
-      >
-
-
-      <label>Mesto polaska</label>
-
-      <input
-        id="from"
-        required
-      >
-
-
-      <label>Mesto dolaska</label>
-
-      <input
-        id="to"
-        required
-      >
-
-
-      <div class="row">
-
-        <div>
-
-          <label>Km polaska</label>
-
-          <input
-            id="startKm"
-            inputmode="decimal"
-            required
-          >
-
-        </div>
-
-
-        <div>
-
-          <label>Km dolaska</label>
-
-          <input
-            id="endKm"
-            inputmode="decimal"
-            required
-          >
-
-        </div>
-
+      <div>
+        <label for="arrivalTime">Vreme dolaska</label>
+        <input type="time" id="arrivalTime">
       </div>
 
+    </div>
 
-      <button
-        class="save"
-        type="submit">
+    <label for="vehicle">Registarska oznaka</label>
+    <input
+      type="text"
+      id="vehicle"
+      value="BG 3431-HS"
+      autocomplete="off"
+    >
 
-        Sačuvaj putni nalog
+    <label for="startPlace">Mesto polaska</label>
+    <input
+      type="text"
+      id="startPlace"
+      autocomplete="off"
+    >
 
-      </button>
+    <label for="endPlace">Mesto dolaska</label>
+    <input
+      type="text"
+      id="endPlace"
+      autocomplete="off"
+    >
 
+    <div class="row">
 
-      <div
-        id="message"
-        class="message">
+      <div>
+        <label for="startKm">Km polaska</label>
+        <input
+          type="number"
+          id="startKm"
+          inputmode="decimal"
+          step="0.1"
+        >
       </div>
 
-    </form>
+      <div>
+        <label for="endKm">Km dolaska</label>
+        <input
+          type="number"
+          id="endKm"
+          inputmode="decimal"
+          step="0.1"
+        >
+      </div>
+
+    </div>
+
+    <div id="distancePreview"
+         style="margin-bottom:12px; font-weight:bold;">
+      Pređeno: 0 km
+    </div>
+
+    <button id="saveButton" class="save">
+      Sačuvaj putni nalog
+    </button>
 
   </div>
 
 
+  <!-- DNEVNI ZBIR -->
   <div class="card">
 
-    <div class="total">
+    <div class="card-title">
+      Dnevni pregled
+    </div>
 
-      Dnevno ukupno:
+    <div class="total-box">
 
-      <span id="dailyTotal">
-        0.00
-      </span>
+      <div class="total-label">
+        Ukupno pređeno danas
+      </div>
 
-      km
+      <div class="total-value" id="dailyTotal">
+        0 km
+      </div>
 
     </div>
 
   </div>
 
 
+  <!-- NALOZI -->
   <div class="card">
 
-    <h2>Putni nalozi</h2>
+    <div class="card-title">
+      Putni nalozi za izabrani datum
+    </div>
 
-    <div id="trips">
-      Učitavanje...
+    <div id="tripsContainer">
+      <div class="loading">
+        Učitavanje...
+      </div>
     </div>
 
   </div>
@@ -317,615 +340,1316 @@
 
 <script>
 
-const API_URL =
-  'https://script.google.com/macros/s/AKfycbxP2DMW9ijdOXOxorNIvUwq4GImQ5YpHCgiJ7oAMs3eXyvVJ9eE7st76Ihc33RMqCzU/exec';
+  /* ============================================================
+     GOOGLE APPS SCRIPT API
+     ============================================================ */
+
+  const API_URL =
+    'https://script.google.com/macros/s/AKfycbxP2DMW9ijdOXOxorNIvUwq4GImQ5YpHCgiJ7oAMs3eXyvVJ9eE7st76Ihc33RMqCzU/exec';
 
 
-function jsonp(params) {
+  /* ============================================================
+     ELEMENTI
+     ============================================================ */
 
-  return new Promise(function(resolve, reject) {
+  const dateInput = document.getElementById('date');
+  const departureTimeInput = document.getElementById('departureTime');
+  const arrivalTimeInput = document.getElementById('arrivalTime');
+  const vehicleInput = document.getElementById('vehicle');
+  const startPlaceInput = document.getElementById('startPlace');
+  const endPlaceInput = document.getElementById('endPlace');
+  const startKmInput = document.getElementById('startKm');
+  const endKmInput = document.getElementById('endKm');
 
-    const callbackName =
-      'callback_' +
-      Date.now() +
-      '_' +
-      Math.floor(Math.random() * 100000);
+  const saveButton = document.getElementById('saveButton');
+  const dailyTotal = document.getElementById('dailyTotal');
+  const tripsContainer = document.getElementById('tripsContainer');
+  const distancePreview = document.getElementById('distancePreview');
+  const statusBox = document.getElementById('status');
+
+  let installPrompt = null;
 
 
-    const script =
-      document.createElement('script');
+  /* ============================================================
+     PWA INSTALL
+     ============================================================ */
+
+  window.addEventListener('beforeinstallprompt', function(event) {
+
+    event.preventDefault();
+
+    installPrompt = event;
+
+    const button = document.getElementById('installButton');
+
+    button.style.display = 'block';
+
+  });
 
 
-    const query =
-      new URLSearchParams(params);
+  document.getElementById('installButton')
+    .addEventListener('click', async function() {
+
+      if (!installPrompt) {
+        return;
+      }
+
+      installPrompt.prompt();
+
+      await installPrompt.userChoice;
+
+      installPrompt = null;
+
+      this.style.display = 'none';
+
+    });
 
 
-    query.set(
-      'callback',
-      callbackName
+  /* ============================================================
+     SERVICE WORKER
+     ============================================================ */
+
+  if ('serviceWorker' in navigator) {
+
+    window.addEventListener('load', function() {
+
+      navigator.serviceWorker
+        .register('./service-worker.js')
+        .catch(function(error) {
+
+          console.error(
+            'Service Worker greška:',
+            error
+          );
+
+        });
+
+    });
+
+  }
+
+
+  /* ============================================================
+     POMOĆNE FUNKCIJE
+     ============================================================ */
+
+  function showStatus(message, type) {
+
+    statusBox.textContent = message;
+
+    statusBox.className = 'status ' + type;
+
+    setTimeout(function() {
+
+      statusBox.className = 'status';
+
+    }, 4000);
+
+  }
+
+
+  function todayISO() {
+
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month = String(
+      now.getMonth() + 1
+    ).padStart(2, '0');
+
+    const day = String(
+      now.getDate()
+    ).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+
+  }
+
+
+  function formatDateForAPI(dateValue) {
+
+    if (!dateValue) {
+      return '';
+    }
+
+    const parts = dateValue.split('-');
+
+    if (parts.length !== 3) {
+      return dateValue;
+    }
+
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+  }
+
+
+  function formatNumber(value) {
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ''
+    ) {
+      return 0;
+    }
+
+    const number = Number(
+      String(value).replace(',', '.')
     );
 
+    if (isNaN(number)) {
+      return 0;
+    }
 
-    script.src =
-      API_URL +
-      '?' +
-      query.toString();
+    return number;
+
+  }
 
 
-    window[callbackName] =
-      function(data) {
+  function formatKm(value) {
 
-        delete window[callbackName];
+    const number = formatNumber(value);
 
-        script.remove();
+    if (Number.isInteger(number)) {
+      return number.toString();
+    }
+
+    return number.toFixed(1);
+
+  }
+
+
+  function calculateDistance() {
+
+    const start = formatNumber(
+      startKmInput.value
+    );
+
+    const end = formatNumber(
+      endKmInput.value
+    );
+
+    if (
+      startKmInput.value === '' ||
+      endKmInput.value === ''
+    ) {
+
+      distancePreview.textContent =
+        'Pređeno: 0 km';
+
+      return;
+
+    }
+
+    const distance = end - start;
+
+    if (distance < 0) {
+
+      distancePreview.textContent =
+        'Pređeno: neispravna kilometraža';
+
+      return;
+
+    }
+
+    distancePreview.textContent =
+      'Pređeno: ' + formatKm(distance) + ' km';
+
+  }
+
+
+  /* ============================================================
+     JSONP
+     ============================================================ */
+
+  function jsonp(params) {
+
+    return new Promise(function(resolve, reject) {
+
+      const callbackName =
+        'jsonpCallback_' +
+        Date.now() +
+        '_' +
+        Math.floor(Math.random() * 100000);
+
+      const script =
+        document.createElement('script');
+
+      const query = new URLSearchParams();
+
+      Object.keys(params).forEach(function(key) {
+
+        query.append(
+          key,
+          params[key]
+        );
+
+      });
+
+      query.append(
+        'callback',
+        callbackName
+      );
+
+      query.append(
+        '_',
+        Date.now()
+      );
+
+      const timeout = setTimeout(function() {
+
+        cleanup();
+
+        reject(
+          new Error('API odgovor nije stigao.')
+        );
+
+      }, 15000);
+
+
+      window[callbackName] = function(data) {
+
+        clearTimeout(timeout);
+
+        cleanup();
 
         resolve(data);
 
       };
 
 
-    script.onerror =
-      function() {
+      function cleanup() {
 
-        delete window[callbackName];
+        try {
+          delete window[callbackName];
+        } catch (e) {
+          window[callbackName] = undefined;
+        }
 
-        script.remove();
+        if (script.parentNode) {
+          script.parentNode.removeChild(script);
+        }
+
+      }
+
+
+      script.onerror = function() {
+
+        clearTimeout(timeout);
+
+        cleanup();
 
         reject(
-          new Error(
-            'Greška u komunikaciji sa serverom.'
-          )
+          new Error('Greška pri povezivanju sa serverom.')
         );
 
       };
 
 
-    document.body.appendChild(script);
+      script.src =
+        API_URL +
+        '?' +
+        query.toString();
 
-  });
+      document.body.appendChild(script);
 
-}
+    });
 
-
-function getCurrentDate() {
-
-  const now = new Date();
-
-  const day =
-    String(now.getDate()).padStart(2, '0');
-
-  const month =
-    String(now.getMonth() + 1).padStart(2, '0');
-
-  const year =
-    now.getFullYear();
-
-  return (
-    day +
-    '-' +
-    month +
-    '-' +
-    year
-  );
-
-}
+  }
 
 
-function getCurrentTime() {
+  /* ============================================================
+     UČITAVANJE PRETHODNOG KM
+     ============================================================ */
 
-  const now = new Date();
+  async function loadLastKm() {
 
-  const hours =
-    String(now.getHours()).padStart(2, '0');
+    const date = formatDateForAPI(
+      dateInput.value
+    );
 
-  const minutes =
-    String(now.getMinutes()).padStart(2, '0');
-
-  return (
-    hours +
-    ':' +
-    minutes
-  );
-
-}
-
-
-async function setInitialValues() {
-
-  document.getElementById('date').value =
-    getCurrentDate();
-
-
-  document.getElementById('departureTime').value =
-    getCurrentTime();
-
-
-  document.getElementById('vehicle').value =
-    'BG 3431-HS';
-
-
-  await loadPreviousKm();
-
-  await loadTrips();
-
-}
-
-
-async function loadPreviousKm() {
-
-  const date =
-    document.getElementById('date').value;
-
-
-  try {
-
-    const km =
-      await jsonp({
-
-        api:
-          'getLastKmForDate',
-
-        date:
-          date
-
-      });
-
-
-    if (
-      km !== null &&
-      km !== undefined &&
-      km !== ''
-    ) {
-
-      document.getElementById('startKm').value =
-        Number(km).toFixed(2);
-
+    if (!date) {
+      return;
     }
 
-  } catch (error) {
+    try {
 
-    console.error(error);
+      const result = await jsonp({
 
-  }
+        api: 'getLastKmForDate',
 
-}
-
-
-async function loadTrips() {
-
-  const date =
-    document.getElementById('date').value;
-
-
-  try {
-
-    const trips =
-      await jsonp({
-
-        api:
-          'getTripsForDate',
-
-        date:
-          date
+        date: date
 
       });
 
 
-    displayTrips(trips);
+      console.log(
+        'getLastKmForDate:',
+        result
+      );
 
 
-    const total =
-      await jsonp({
+      let value = null;
 
-        api:
-          'getDailyTotal',
 
-        date:
-          date
+      if (result) {
 
-      });
-
-
-    document.getElementById('dailyTotal').textContent =
-      Number(total).toFixed(2);
-
-
-  } catch (error) {
-
-    document.getElementById('trips').textContent =
-      'Greška pri učitavanju.';
-
-    console.error(error);
-
-  }
-
-}
-
-
-function displayTrips(trips) {
-
-  const container =
-    document.getElementById('trips');
-
-
-  if (!trips || !trips.length) {
-
-    container.innerHTML =
-      'Nema unetih putnih naloga za ovaj dan.';
-
-    return;
-
-  }
-
-
-  container.innerHTML =
-
-    trips.map(function(trip) {
-
-      return `
-
-        <div class="trip">
-
-          <div class="trip-title">
-
-            ${escapeHtml(trip.from)}
-
-            →
-
-            ${escapeHtml(trip.to)}
-
-          </div>
-
-
-          <div class="trip-info">
-
-            ${trip.departureTime}
-            -
-            ${trip.arrivalTime}
-
-            <br>
-
-            Km:
-            ${formatKm(trip.startKm)}
-            →
-            ${formatKm(trip.endKm)}
-
-            <br>
-
-            Pređeno:
-
-            <strong>
-              ${formatKm(trip.distance)} km
-            </strong>
-
-          </div>
-
-
-          <button
-            class="delete"
-            onclick="deleteTrip(${trip.row})">
-
-            Obriši
-
-          </button>
-
-        </div>
-
-      `;
-
-    }).join('');
-
-}
-
-
-function formatKm(value) {
-
-  return Number(value)
-    .toFixed(2)
-    .replace('.', ',');
-
-}
-
-
-function escapeHtml(text) {
-
-  return String(text)
-
-    .replace(/&/g, '&amp;')
-
-    .replace(/</g, '&lt;')
-
-    .replace(/>/g, '&gt;')
-
-    .replace(/"/g, '&quot;')
-
-    .replace(/'/g, '&#039;');
-
-}
-
-
-document
-  .getElementById('tripForm')
-  .addEventListener(
-    'submit',
-    async function(event) {
-
-      event.preventDefault();
-
-
-      const message =
-        document.getElementById('message');
-
-
-      message.textContent =
-        'Čuvanje...';
-
-
-      const data = {
-
-        date:
-          document.getElementById('date').value,
-
-        departureTime:
-          document.getElementById('departureTime').value,
-
-        arrivalTime:
-          document.getElementById('arrivalTime').value,
-
-        vehicle:
-          document.getElementById('vehicle').value,
-
-        from:
-          document.getElementById('from').value,
-
-        to:
-          document.getElementById('to').value,
-
-        startKm:
-          document.getElementById('startKm').value,
-
-        endKm:
-          document.getElementById('endKm').value
-
-      };
-
-
-      try {
-
-        const result =
-          await fetch(
-            API_URL,
-            {
-
-              method:
-                'POST',
-
-              headers: {
-                'Content-Type':
-                  'text/plain;charset=utf-8'
-              },
-
-              body:
-                JSON.stringify({
-
-                  action:
-                    'saveTrip',
-
-                  data:
-                    data
-
-                })
-
-            }
-          ).then(function(response) {
-
-            return response.json();
-
-          });
-
-
-        if (!result.success) {
-
-          throw new Error(
-            result.error ||
-            'Greška pri čuvanju.'
-          );
-
+        if (
+          result.km !== undefined &&
+          result.km !== null
+        ) {
+          value = result.km;
         }
 
+        else if (
+          result.lastKm !== undefined &&
+          result.lastKm !== null
+        ) {
+          value = result.lastKm;
+        }
 
-        message.textContent =
-          'Sačuvano ✓';
+        else if (
+          result.value !== undefined &&
+          result.value !== null
+        ) {
+          value = result.value;
+        }
 
-
-        document.getElementById('dailyTotal').textContent =
-          Number(result.dailyTotal)
-            .toFixed(2);
-
-
-        document.getElementById('arrivalTime').value =
-          '';
-
-        document.getElementById('from').value =
-          '';
-
-        document.getElementById('to').value =
-          '';
-
-        document.getElementById('endKm').value =
-          '';
-
-
-        document.getElementById('startKm').value =
-          Number(result.lastKm)
-            .toFixed(2);
-
-
-        await loadTrips();
-
-      } catch (error) {
-
-        message.textContent =
-          error.message;
+        else if (
+          result.data !== undefined &&
+          result.data !== null &&
+          typeof result.data !== 'object'
+        ) {
+          value = result.data;
+        }
 
       }
-
-    }
-  );
-
-
-async function deleteTrip(row) {
-
-  if (
-    !confirm(
-      'Obrisati ovaj putni nalog?'
-    )
-  ) {
-
-    return;
-
-  }
-
-
-  try {
-
-    const result =
-      await jsonp({
-
-        api:
-          'deleteTrip',
-
-        row:
-          row
-
-      });
-
-
-    if (
-      result &&
-      result.success === false
-    ) {
-
-      throw new Error(
-        result.error
-      );
-
-    }
-
-
-    await loadTrips();
-
-    await loadPreviousKm();
-
-
-  } catch (error) {
-
-    alert(error.message);
-
-  }
-
-}
-
-
-document
-  .getElementById('date')
-  .addEventListener(
-    'change',
-    function() {
-
-      loadPreviousKm();
-
-      loadTrips();
-
-    }
-  );
-
-
-/* PWA instalacija */
-
-let deferredPrompt = null;
-
-
-window.addEventListener(
-  'beforeinstallprompt',
-  function(event) {
-
-    event.preventDefault();
-
-    deferredPrompt = event;
-
-    const installButton =
-      document.getElementById(
-        'installButton'
-      );
-
-    installButton.style.display =
-      'block';
-
-  }
-);
-
-
-document
-  .getElementById('installButton')
-  .addEventListener(
-    'click',
-    async function() {
-
-      if (!deferredPrompt) {
-        return;
-      }
-
-
-      deferredPrompt.prompt();
-
-
-      const result =
-        await deferredPrompt.userChoice;
 
 
       if (
-        result.outcome === 'accepted'
+        value !== null &&
+        value !== undefined &&
+        value !== ''
       ) {
 
-        this.style.display =
-          'none';
+        startKmInput.value =
+          formatKm(value);
+
+        calculateDistance();
+
+      }
+
+    }
+
+    catch (error) {
+
+      console.error(
+        'Greška pri učitavanju prethodnog km:',
+        error
+      );
+
+    }
+
+  }
+
+
+  /* ============================================================
+     DNEVNI ZBIR
+     ============================================================ */
+
+  async function loadDailyTotal() {
+
+    const date = formatDateForAPI(
+      dateInput.value
+    );
+
+    if (!date) {
+      return;
+    }
+
+    dailyTotal.textContent =
+      '...';
+
+    try {
+
+      const result = await jsonp({
+
+        api: 'getDailyTotal',
+
+        date: date
+
+      });
+
+
+      console.log(
+        'getDailyTotal:',
+        result
+      );
+
+
+      let total = 0;
+
+
+      if (result !== null && result !== undefined) {
+
+        if (
+          result.total !== undefined &&
+          result.total !== null
+        ) {
+          total = result.total;
+        }
+
+        else if (
+          result.dailyTotal !== undefined &&
+          result.dailyTotal !== null
+        ) {
+          total = result.dailyTotal;
+        }
+
+        else if (
+          result.value !== undefined &&
+          result.value !== null
+        ) {
+          total = result.value;
+        }
+
+        else if (
+          result.data !== undefined &&
+          result.data !== null &&
+          typeof result.data !== 'object'
+        ) {
+          total = result.data;
+        }
 
       }
 
 
-      deferredPrompt = null;
+      dailyTotal.textContent =
+        formatKm(total) + ' km';
 
     }
-  );
+
+    catch (error) {
+
+      console.error(
+        'Greška pri učitavanju dnevnog zbira:',
+        error
+      );
+
+      dailyTotal.textContent =
+        'Greška';
+
+    }
+
+  }
 
 
-if ('serviceWorker' in navigator) {
+  /* ============================================================
+     UČITAVANJE PUTNIH NALOGA
+     ============================================================ */
 
-  window.addEventListener(
-    'load',
+  async function loadTrips() {
+
+    const date = formatDateForAPI(
+      dateInput.value
+    );
+
+    if (!date) {
+      return;
+    }
+
+    tripsContainer.innerHTML =
+      '<div class="loading">Učitavanje...</div>';
+
+
+    try {
+
+      const result = await jsonp({
+
+        api: 'getTripsForDate',
+
+        date: date
+
+      });
+
+
+      console.log(
+        'getTripsForDate:',
+        result
+      );
+
+
+      let trips = [];
+
+
+      if (Array.isArray(result)) {
+
+        trips = result;
+
+      }
+
+      else if (
+        result &&
+        Array.isArray(result.trips)
+      ) {
+
+        trips = result.trips;
+
+      }
+
+      else if (
+        result &&
+        Array.isArray(result.data)
+      ) {
+
+        trips = result.data;
+
+      }
+
+      else if (
+        result &&
+        Array.isArray(result.rows)
+      ) {
+
+        trips = result.rows;
+
+      }
+
+
+      renderTrips(trips);
+
+    }
+
+    catch (error) {
+
+      console.error(
+        'Greška pri učitavanju naloga:',
+        error
+      );
+
+      tripsContainer.innerHTML =
+        '<div class="empty">' +
+        'Nije moguće učitati putne naloge.' +
+        '</div>';
+
+    }
+
+  }
+
+
+  /* ============================================================
+     PRIKAZ PUTNIH NALOGA
+     ============================================================ */
+
+  function getTripValue(trip, names) {
+
+    for (
+      let i = 0;
+      i < names.length;
+      i++
+    ) {
+
+      const name = names[i];
+
+      if (
+        trip &&
+        trip[name] !== undefined &&
+        trip[name] !== null
+      ) {
+
+        return trip[name];
+
+      }
+
+    }
+
+    return '';
+
+  }
+
+
+  function renderTrips(trips) {
+
+    if (
+      !Array.isArray(trips) ||
+      trips.length === 0
+    ) {
+
+      tripsContainer.innerHTML =
+        '<div class="empty">' +
+        'Nema putnih naloga za izabrani datum.' +
+        '</div>';
+
+      return;
+
+    }
+
+
+    tripsContainer.innerHTML = '';
+
+
+    trips.forEach(function(trip, index) {
+
+      /*
+       * Podržavamo više mogućih naziva polja,
+       * tako da prikaz ne zavisi od malog
+       * razlikovanja naziva u Apps Script-u.
+       */
+
+      const from =
+        getTripValue(
+          trip,
+          [
+            'startPlace',
+            'departurePlace',
+            'placeFrom',
+            'from',
+            'mestoPolaska'
+          ]
+        );
+
+      const to =
+        getTripValue(
+          trip,
+          [
+            'endPlace',
+            'arrivalPlace',
+            'placeTo',
+            'to',
+            'mestoDolaska'
+          ]
+        );
+
+      const departureTime =
+        getTripValue(
+          trip,
+          [
+            'departureTime',
+            'timeDeparture',
+            'vremePolaska'
+          ]
+        );
+
+      const arrivalTime =
+        getTripValue(
+          trip,
+          [
+            'arrivalTime',
+            'timeArrival',
+            'vremeDolaska'
+          ]
+        );
+
+      const startKm =
+        getTripValue(
+          trip,
+          [
+            'startKm',
+            'departureKm',
+            'kmStart',
+            'kmPolaska'
+          ]
+        );
+
+      const endKm =
+        getTripValue(
+          trip,
+          [
+            'endKm',
+            'arrivalKm',
+            'kmEnd',
+            'kmDolaska'
+          ]
+        );
+
+      const vehicle =
+        getTripValue(
+          trip,
+          [
+            'vehicle',
+            'registration',
+            'reg',
+            'registarskaOznaka'
+          ]
+        );
+
+      const row =
+        getTripValue(
+          trip,
+          [
+            'row',
+            '_row',
+            'sheetRow'
+          ]
+        );
+
+
+      let distance = 0;
+
+      if (
+        startKm !== '' &&
+        endKm !== ''
+      ) {
+
+        distance =
+          formatNumber(endKm) -
+          formatNumber(startKm);
+
+      }
+
+
+      const tripElement =
+        document.createElement('div');
+
+      tripElement.className =
+        'trip';
+
+
+      const route =
+        document.createElement('div');
+
+      route.className =
+        'trip-route';
+
+      route.textContent =
+        (from || '—') +
+        ' → ' +
+        (to || '—');
+
+
+      const info =
+        document.createElement('div');
+
+      info.className =
+        'trip-info';
+
+      info.innerHTML =
+        'Polazak: ' +
+        escapeHtml(departureTime || '—') +
+        ' &nbsp; | &nbsp; Dolazak: ' +
+        escapeHtml(arrivalTime || '—') +
+        '<br>' +
+        'Km: ' +
+        escapeHtml(formatKm(startKm)) +
+        ' → ' +
+        escapeHtml(formatKm(endKm)) +
+        '<br>' +
+        'Vozilo: ' +
+        escapeHtml(vehicle || '—');
+
+
+      const distanceElement =
+        document.createElement('div');
+
+      distanceElement.className =
+        'trip-distance';
+
+      distanceElement.textContent =
+        'Pređeno: ' +
+        formatKm(distance) +
+        ' km';
+
+
+      tripElement.appendChild(route);
+
+      tripElement.appendChild(info);
+
+      tripElement.appendChild(distanceElement);
+
+
+      if (row !== '') {
+
+        const deleteButton =
+          document.createElement('button');
+
+        deleteButton.className =
+          'delete';
+
+        deleteButton.textContent =
+          'Obriši nalog';
+
+        deleteButton.addEventListener(
+          'click',
+          function() {
+
+            deleteTrip(row);
+
+          }
+        );
+
+        tripElement.appendChild(
+          deleteButton
+        );
+
+      }
+
+
+      tripsContainer.appendChild(
+        tripElement
+      );
+
+    });
+
+  }
+
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+  /* ============================================================
+     BRISANJE
+     ============================================================ */
+
+  async function deleteTrip(row) {
+
+    if (!confirm(
+      'Da li sigurno želiš da obrišeš ovaj putni nalog?'
+    )) {
+
+      return;
+
+    }
+
+
+    try {
+
+      const result = await jsonp({
+
+        api: 'deleteTrip',
+
+        row: row
+
+      });
+
+
+      console.log(
+        'deleteTrip:',
+        result
+      );
+
+
+      if (
+        result &&
+        result.success === false
+      ) {
+
+        throw new Error(
+          result.error ||
+          'Brisanje nije uspelo.'
+        );
+
+      }
+
+
+      showStatus(
+        'Putni nalog je obrisan.',
+        'success'
+      );
+
+
+      await refreshAll();
+
+    }
+
+    catch (error) {
+
+      console.error(
+        'Greška pri brisanju:',
+        error
+      );
+
+      showStatus(
+        'Greška: ' + error.message,
+        'error'
+      );
+
+    }
+
+  }
+
+
+  /* ============================================================
+     ČUVANJE
+     ============================================================ */
+
+  async function saveTrip() {
+
+    const date =
+      formatDateForAPI(
+        dateInput.value
+      );
+
+    const departureTime =
+      departureTimeInput.value;
+
+    const arrivalTime =
+      arrivalTimeInput.value;
+
+    const vehicle =
+      vehicleInput.value.trim();
+
+    const startPlace =
+      startPlaceInput.value.trim();
+
+    const endPlace =
+      endPlaceInput.value.trim();
+
+    const startKm =
+      startKmInput.value;
+
+    const endKm =
+      endKmInput.value;
+
+
+    if (!date) {
+
+      showStatus(
+        'Unesi datum.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    if (!departureTime) {
+
+      showStatus(
+        'Unesi vreme polaska.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    if (!arrivalTime) {
+
+      showStatus(
+        'Unesi vreme dolaska.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    if (!vehicle) {
+
+      showStatus(
+        'Unesi registarsku oznaku.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    if (!startPlace) {
+
+      showStatus(
+        'Unesi mesto polaska.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    if (!endPlace) {
+
+      showStatus(
+        'Unesi mesto dolaska.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    if (
+      startKm === '' ||
+      endKm === ''
+    ) {
+
+      showStatus(
+        'Unesi kilometražu polaska i dolaska.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    const start =
+      formatNumber(startKm);
+
+    const end =
+      formatNumber(endKm);
+
+
+    if (end < start) {
+
+      showStatus(
+        'Km dolaska ne može biti manji od km polaska.',
+        'error'
+      );
+
+      return;
+
+    }
+
+
+    const data = {
+
+      date: date,
+
+      departureTime:
+        departureTime,
+
+      arrivalTime:
+        arrivalTime,
+
+      vehicle:
+        vehicle,
+
+      startPlace:
+        startPlace,
+
+      endPlace:
+        endPlace,
+
+      startKm:
+        start,
+
+      endKm:
+        end
+
+    };
+
+
+    saveButton.disabled = true;
+
+    saveButton.textContent =
+      'Čuvanje...';
+
+
+    try {
+
+      const response =
+        await fetch(
+          API_URL,
+          {
+            method: 'POST',
+
+            headers: {
+              'Content-Type':
+                'text/plain;charset=utf-8'
+            },
+
+            body: JSON.stringify({
+
+              action:
+                'saveTrip',
+
+              data:
+                data
+
+            })
+
+          }
+        );
+
+
+      const result =
+        await response.json();
+
+
+      console.log(
+        'saveTrip:',
+        result
+      );
+
+
+      if (
+        result &&
+        result.success === false
+      ) {
+
+        throw new Error(
+          result.error ||
+          'Čuvanje nije uspelo.'
+        );
+
+      }
+
+
+      showStatus(
+        'Putni nalog je uspešno sačuvan.',
+        'success'
+      );
+
+
+      /*
+       * Čistimo samo podatke putovanja.
+       * Datum, vozilo i km polaska ostaju.
+       */
+
+      startPlaceInput.value = '';
+
+      endPlaceInput.value = '';
+
+      arrivalTimeInput.value = '';
+
+      endKmInput.value = '';
+
+
+      /*
+       * Nakon čuvanja ponovo učitavamo:
+       * - prethodni km
+       * - dnevni zbir
+       * - putne naloge
+       */
+
+      await refreshAll();
+
+
+    }
+
+    catch (error) {
+
+      console.error(
+        'Greška pri čuvanju:',
+        error
+      );
+
+
+      showStatus(
+        'Greška pri čuvanju: ' +
+        error.message,
+        'error'
+      );
+
+    }
+
+
+    finally {
+
+      saveButton.disabled = false;
+
+      saveButton.textContent =
+        'Sačuvaj putni nalog';
+
+    }
+
+  }
+
+
+  /* ============================================================
+     OSVEŽAVANJE SVIH PODATAKA
+     ============================================================ */
+
+  async function refreshAll() {
+
+    await Promise.all([
+
+      loadLastKm(),
+
+      loadDailyTotal(),
+
+      loadTrips()
+
+    ]);
+
+  }
+
+
+  /* ============================================================
+     PROMENA DATUMA
+     ============================================================ */
+
+  dateInput.addEventListener(
+    'change',
     function() {
 
-      navigator.serviceWorker
-        .register(
-          'service-worker.js'
-        )
-        .catch(function(error) {
-
-          console.error(
-            'Service Worker:',
-            error
-          );
-
-        });
+      refreshAll();
 
     }
   );
 
-}
+
+  /* ============================================================
+     KM
+     ============================================================ */
+
+  startKmInput.addEventListener(
+    'input',
+    calculateDistance
+  );
+
+  endKmInput.addEventListener(
+    'input',
+    calculateDistance
+  );
 
 
-setInitialValues();
+  /* ============================================================
+     SAVE
+     ============================================================ */
+
+  saveButton.addEventListener(
+    'click',
+    saveTrip
+  );
+
+
+  /* ============================================================
+     POČETNO UČITAVANJE
+     ============================================================ */
+
+  function initialize() {
+
+    const now =
+      new Date();
+
+
+    dateInput.value =
+      todayISO();
+
+
+    departureTimeInput.value =
+      String(
+        now.getHours()
+      ).padStart(2, '0') +
+      ':' +
+      String(
+        now.getMinutes()
+      ).padStart(2, '0');
+
+
+    refreshAll();
+
+  }
+
+
+  initialize();
 
 </script>
 
